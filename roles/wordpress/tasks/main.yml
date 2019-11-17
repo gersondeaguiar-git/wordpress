@@ -10,6 +10,13 @@
     src=/tmp/wordpress.tar.gz 
     dest=/var/www/ 
     copy=no
+ - name: Modifica permissao pasta wordpress
+   file:
+    path: /var/www/wordpress
+    owner: analista
+    group: www-data
+    mode: "0755"
+    recurse: yes
  - name: Atualiza o site Apache padrao
    lineinfile:
     dest=/etc/apache2/sites-enabled/000-default.conf
@@ -21,10 +28,15 @@
    command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php creates=/var/www/wordpress/wp-config.php
  - name: Atualiza a configuracao WordPress
    lineinfile:
-    dest=/var/www/wordpress/wp-config.php
-    regexp="{{item.regexp}}"
-    line="{{item.line}}"
+    dest: /var/www/wordpress/wp-config.php
+    #regexp: 'database_name_here'
+    #line: "define('DB_NAME', '{{wp_mysql_db}}');"
+    state: present
+    backup: yes
+    backrefs: yes
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
    with_items:
-   - {regexp: "define\\( 'DB_NAME', '(.)+'\\);", line: "define('DB_NAME', '{{wp_mysql_db}});'"}
-   - {regexp: "define\\( 'DB_USER', '(.)+'\\);", line: "define('DB_USER', '{{wp_mysql_user}});'"}
-   - {regexp: "define\\( 'DB_PASSWORD', '(.)+'\\);", line: "define('DB_PASSWORD', '{{wp_mysql_password}});'"}
+    - {regexp: 'database_name_here', line: "define('DB_NAME', '{{wp_mysql_db}}');"}
+    - {regexp: 'username_here', line: "define('DB_USER', '{{wp_mysql_user}}');"}
+    - {regexp: 'password_here', line: "define('DB_PASSWORD', '{{wp_mysql_password}}');"}
