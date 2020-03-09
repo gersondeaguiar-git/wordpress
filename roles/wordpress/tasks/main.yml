@@ -13,7 +13,7 @@
  - name: Modifica permissao pasta wordpress
    file:
     path: /var/www/wordpress
-    owner: analista
+    owner: lab
     group: www-data
     mode: "0755"
     recurse: yes

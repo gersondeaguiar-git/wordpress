@@ -1,5 +1,5 @@
 - hosts: wordpress
-  remote_user: analista
+  remote_user: lab
   become: yes
   roles:
   - server
